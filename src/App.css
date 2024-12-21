@@ -1,0 +1,8 @@
+.App {
+  text-align: center;
+}
+
+
+/* Add this line to include Leaflet CSS */
+@import url('https://unpkg.com/leaflet/dist/leaflet.css');
+
