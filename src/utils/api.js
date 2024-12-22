@@ -1,4 +1,4 @@
-const BASE_URL = "https://projecthubbackend.onrender.com";
+const BASE_URL = "https://projecthub-38w5.onrender.com/";
 
 class ApiError extends Error {
   constructor(status, message) {
