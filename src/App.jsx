@@ -18,6 +18,7 @@ function ProtectedAdminRoute({ children }) {
               credentials: "include",
               headers: {
                   "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
               },
           });
   
