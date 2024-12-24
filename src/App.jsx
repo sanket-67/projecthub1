@@ -13,7 +13,7 @@ function ProtectedAdminRoute({ children }) {
   useEffect(() => {
     const checkAdminStatus = async () => {
       try {
-          const response = await fetch("http://localhost:3000/users/admin", {
+          const response = await fetch("https://projecthub-38w5.onrender.com/users/admin", {
               method: "POST",
               credentials: "include",
               headers: {
