@@ -19,7 +19,8 @@ function ProtectedAdminRoute({ children }) {
           headers: {
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
-          }
+          },
+           body: JSON.stringify(yourRequestBody),
         })
   
         const data = await response.json()
