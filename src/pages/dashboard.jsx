@@ -138,7 +138,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchUserAndProjects = async () => {
       try {
-        const userResponse = await fetch("http://localhost:3000/users/admin", {
+        const userResponse = await fetch("https://projecthub-38w5.onrender.com/users/admin", {
           method: "POST",
           credentials: "include",
           headers: {
@@ -150,7 +150,7 @@ export default function DashboardPage() {
           setIsAdmin(true)
         }
 
-        const projectsResponse = await fetch("http://localhost:3000/project/list", {
+        const projectsResponse = await fetch("https://projecthub-38w5.onrender.com/project/list", {
           credentials: "include",
         })
         if (!projectsResponse.ok) throw new Error("Failed to fetch projects")
@@ -171,7 +171,7 @@ export default function DashboardPage() {
   const handleApply = async (projectName) => {
     try {
       setApplicationStatus('loading')
-      const response = await fetch("http://localhost:3000/project/apply", {
+      const response = await fetch("https://projecthub-38w5.onrender.com/project/apply", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -197,7 +197,7 @@ export default function DashboardPage() {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:3000/users/logout", { 
+      await fetch("https://projecthub-38w5.onrender.com/users/logout", { 
         method: "POST",
         credentials: "include"
       })
