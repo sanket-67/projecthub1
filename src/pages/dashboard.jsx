@@ -144,7 +144,8 @@ export default function DashboardPage() {
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
-          }
+          },
+           body: JSON.stringify(yourRequestBody),
         })
         
         if (userResponse.ok) {
