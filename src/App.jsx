@@ -13,31 +13,29 @@ function ProtectedAdminRoute({ children }) {
   useEffect(() => {
     const checkAdminStatus = async () => {
       try {
-          const response = await fetch("https://projecthub-38w5.onrender.com/users/admin", {
-              method: "POST",
-              credentials: "include",
-              headers: {
-                  "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-              },
-          });
-  
-          const data = await response.json();
-  
-          if (data.success) {
-              setIsAdmin(true);
-          } else {
-              setIsAdmin(false);
+        const response = await fetch("https://projecthub-38w5.onrender.com/users/admin", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json"
           }
-      } catch (err) {
-          console.error("Admin check error:", err);
-          setIsAdmin(false);
-      } finally {
-          setIsLoading(false);
-      }
-  };
+        })
   
-
+        const data = await response.json()
+  
+        if (data.success) {
+          setIsAdmin(true)
+        } else {
+          setIsAdmin(false)
+        }
+      } catch (err) {
+        console.error("Admin check error:", err)
+        setIsAdmin(false)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+  
     checkAdminStatus()
   }, [])
 
