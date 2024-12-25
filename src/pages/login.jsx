@@ -9,7 +9,7 @@ export default function LoginPage() {
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
-  identifier : "",
+    identifier: "",  // Used for username or email
     password: "",
     rememberMe: false
   })
@@ -54,7 +54,7 @@ export default function LoginPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          username: formData.identifier,
+          identifier: formData.identifier,  // Sending username or email
           password: formData.password
         }),
         credentials: "include",
@@ -129,9 +129,9 @@ export default function LoginPage() {
               <Input
                 label="Username or Email"
                 type="text"
-                value={formData.username}
-                onChange={e => setFormData({ ...formData, username: e.target.value })}
-                error={errors.username}
+                value={formData.identifier}
+                onChange={e => setFormData({ ...formData, identifier: e.target.value })}
+                error={errors.identifier}
                 required
                 className="transform transition-all duration-300 hover:scale-[1.01] focus-within:scale-[1.01]"
               />
@@ -259,4 +259,3 @@ export default function LoginPage() {
     </div>
   )
 }
-
