@@ -9,7 +9,7 @@ export default function LoginPage() {
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
-    username: "",
+  identifier : "",
     password: "",
     rememberMe: false
   })
@@ -30,7 +30,7 @@ export default function LoginPage() {
     const newErrors = {}
     
     if (!formData.username) {
-      newErrors.username = "Username or email is required"
+      newErrors.identifier = "Username or email is required"
     }
     
     if (!formData.password) {
