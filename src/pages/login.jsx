@@ -29,7 +29,7 @@ export default function LoginPage() {
   const validateForm = () => {
     const newErrors = {}
     
-    if (!formData.username) {
+    if (!formData.identifier) {
       newErrors.identifier = "Username or email is required"
     }
     
@@ -54,7 +54,7 @@ export default function LoginPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          username: formData.username,
+          username: formData.identifier,
           password: formData.password
         }),
         credentials: "include",
