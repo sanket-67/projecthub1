@@ -15,6 +15,36 @@ export default function LoginPage() {
   })
   const [errors, setErrors] = useState({})
   const [loginStatus, setLoginStatus] = useState(null) // 'success', 'error', or null
+  const [isAuthenticated, setAuthState] = useState(false) // Track authentication state
+
+  // Refresh Token Handler
+  const refreshAccessToken = async () => {
+    try {
+      const response = await fetch('/api/auth/refresh', {
+        method: 'GET',
+        credentials: 'include', // To include cookies if using them
+      })
+      if (!response.ok) {
+        throw new Error('Failed to refresh token')
+      }
+      const data = await response.json()
+      localStorage.setItem('accessToken', data.accessToken)
+      return data.accessToken
+    } catch (err) {
+      console.error('Refresh token expired:', err)
+    }
+  }
+
+  // Session Restoration logic using useEffect
+  useEffect(() => {
+    const restoreSession = async () => {
+      const token = await refreshAccessToken()
+      if (token) {
+        setAuthState(true)
+      }
+    }
+    restoreSession()
+  }, [])
 
   // Reset login status after 5 seconds
   useEffect(() => {
@@ -52,7 +82,9 @@ export default function LoginPage() {
     try {
       const response = await fetch("https://projecthub-38w5.onrender.com/users/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
           identifier: formData.identifier,  // Sending username or email
           password: formData.password
@@ -234,7 +266,7 @@ export default function LoginPage() {
               </div>
               <div>
                 <h3 className="font-semibold">Active Community</h3>
-                <p className="text-blue-100">Join thousands of developers working on exciting projects</p>
+                <p className="text-blue-100">Join thousands of developers working together</p>
               </div>
             </div>
 
@@ -243,15 +275,19 @@ export default function LoginPage() {
                 <Lock className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="font-semibold">Secure Platform</h3>
-                <p className="text-blue-100">Your data is protected with enterprise-grade security</p>
+                <h3 className="font-semibold">Secure Projects</h3>
+                <p className="text-blue-100">Your code and progress are safe with us</p>
               </div>
             </div>
 
-            <div className="border-t border-white/20 pt-6 mt-6 animate-fade-in-up [animation-delay:800ms]">
-              <blockquote className="text-lg font-medium">
-                "ProjectHub has helped me find amazing collaborators for my open-source projects"</blockquote>
-              <p className="mt-2 text-blue-100">- Sarah Chen, Software Engineer</p>
+            <div className="flex items-start space-x-4 animate-fade-in-up [animation-delay:800ms]">
+              <div className="mt-1 bg-white/10 rounded-lg p-2 transform transition-transform hover:scale-110">
+                <ArrowRight className="h-6 w-6" />
+              </div>
+              <div>
+                <h3 className="font-semibold">Easy Project Sharing</h3>
+                <p className="text-blue-100">Quickly share your progress with colleagues and potential employers</p>
+              </div>
             </div>
           </div>
         </div>
