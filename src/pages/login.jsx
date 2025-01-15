@@ -20,7 +20,7 @@ export default function LoginPage() {
   // Refresh Token Handler
   const refreshAccessToken = async () => {
     try {
-      const response = await fetch('/api/auth/refresh', {
+      const response = await fetch('https://projecthub-38w5.onrender.com/users/gettoken', {
         method: 'GET',
         credentials: 'include', // To include cookies if using them
       })
