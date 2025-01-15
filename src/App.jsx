@@ -19,7 +19,6 @@ function ProtectedAdminRoute({ children }) {
           headers: {
             "Content-Type": "application/json",
           },
-  
         })
   
         const data = await response.json()
@@ -71,8 +70,7 @@ function App() {
             </ProtectedAdminRoute>
           }
         />
-        <Route path="/" element={<Navigate to="/" replace />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} /> {/* Redirect all unknown routes to '/' */}
       </Routes>
     </Router>
   )
