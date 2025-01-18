@@ -13,7 +13,7 @@ function ProtectedRoute({ children }) {
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        const response = await fetch("https://projecthub-38w5.onrender.com/users/auth", {
+        const response = await fetch("https://projecthub-38w5.onrender.com/users/login", {
           method: "GET",
           credentials: "include",
           headers: {
