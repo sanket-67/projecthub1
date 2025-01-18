@@ -9,14 +9,21 @@ export default function LoginPage() {
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
-    identifier: "",  // Used for username or email
+    identifier: "",
     password: "",
     rememberMe: false
   })
   const [errors, setErrors] = useState({})
-  const [loginStatus, setLoginStatus] = useState(null) // 'success', 'error', or null
+  const [loginStatus, setLoginStatus] = useState(null)
 
-  // Reset login status after 5 seconds
+  useEffect(() => {
+    // Check if user is already logged in
+    const isAuthenticated = localStorage.getItem("isLoggedIn") === "true";
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
+
   useEffect(() => {
     if (loginStatus) {
       const timer = setTimeout(() => {
@@ -54,7 +61,7 @@ export default function LoginPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          identifier: formData.identifier,  // Sending username or email
+          identifier: formData.identifier,
           password: formData.password
         }),
         credentials: "include",
@@ -64,9 +71,11 @@ export default function LoginPage() {
         const errorData = await response.json()
         throw new Error(errorData.message || "Login failed")
       }
+
+      // Set authentication state in localStorage
+      localStorage.setItem("isLoggedIn", "true")
   
       setLoginStatus('success')
-      // Add a small delay before navigation for the success animation
       setTimeout(() => {
         navigate("/dashboard")
       }, 1000)
@@ -81,13 +90,10 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
-      {/* Left side - Login Form */}
       <div className="flex-1 flex items-center justify-center p-8 bg-white">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
-            <div 
-              className="mx-auto h-12 w-12 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center transform transition-transform duration-700 hover:scale-110 hover:rotate-12"
-            >
+            <div className="mx-auto h-12 w-12 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center transform transition-transform duration-700 hover:scale-110 hover:rotate-12">
               <Users className="h-6 w-6 text-white" />
             </div>
             <h2 className="mt-6 text-3xl font-extrabold text-gray-900 animate-fade-in">
@@ -99,14 +105,12 @@ export default function LoginPage() {
           </div>
 
           {loginStatus && (
-            <div
-              className={`transform transition-all duration-500 ease-in-out
-                ${loginStatus === 'success' 
-                  ? 'bg-green-50 text-green-700 border-green-200' 
-                  : 'bg-red-50 text-red-700 border-red-200'
-                } 
-                rounded-lg p-4 flex items-center border animate-slide-in-down`}
-            >
+            <div className={`transform transition-all duration-500 ease-in-out
+              ${loginStatus === 'success' 
+                ? 'bg-green-50 text-green-700 border-green-200' 
+                : 'bg-red-50 text-red-700 border-red-200'
+              } 
+              rounded-lg p-4 flex items-center border animate-slide-in-down`}>
               {loginStatus === 'success' ? (
                 <>
                   <CheckCircle2 className="h-5 w-5 mr-3 animate-bounce" />
@@ -121,10 +125,7 @@ export default function LoginPage() {
             </div>
           )}
           
-          <form 
-            className="mt-8 space-y-6 transform transition-all duration-500"
-            onSubmit={handleSubmit}
-          >
+          <form className="mt-8 space-y-6 transform transition-all duration-500" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <Input
                 label="Username or Email"
@@ -217,7 +218,6 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Right side - Features/Benefits */}
       <div className="hidden md:flex md:flex-1 bg-gradient-to-br from-blue-600 to-indigo-700 text-white p-8">
         <div className="w-full max-w-md mx-auto flex flex-col justify-center space-y-8">
           <div className="animate-fade-in-up [animation-delay:200ms]">
@@ -250,7 +250,8 @@ export default function LoginPage() {
 
             <div className="border-t border-white/20 pt-6 mt-6 animate-fade-in-up [animation-delay:800ms]">
               <blockquote className="text-lg font-medium">
-                "ProjectHub has helped me find amazing collaborators for my open-source projects"</blockquote>
+                "ProjectHub has helped me find amazing collaborators for my open-source projects"
+              </blockquote>
               <p className="mt-2 text-blue-100">- Sarah Chen, Software Engineer</p>
             </div>
           </div>
@@ -259,3 +260,4 @@ export default function LoginPage() {
     </div>
   )
 }
+
