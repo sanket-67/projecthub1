@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useNavigate, Link } from "react-router-dom"
+import { useNavigate, Link, useLocation } from "react-router-dom"
 import { Button } from "../components/ui/button"
 import { Input } from "../components/ui/input"
 import { LoadingDots } from "../components/ui/loading-dots"
@@ -7,6 +7,7 @@ import { Users, Lock, ArrowRight, Github, AlertCircle, CheckCircle2 } from 'luci
 
 export default function LoginPage() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     identifier: "",
@@ -15,6 +16,7 @@ export default function LoginPage() {
   })
   const [errors, setErrors] = useState({})
   const [loginStatus, setLoginStatus] = useState(null)
+  const [message, setMessage] = useState("")
 
   useEffect(() => {
     // Check if user is already logged in
@@ -22,7 +24,18 @@ export default function LoginPage() {
     if (isAuthenticated) {
       navigate("/dashboard");
     }
-  }, [navigate]);
+
+    // Check if user was redirected here due to logout or session expiry
+    const params = new URLSearchParams(location.search)
+    const logoutMessage = params.get('logout')
+    const sessionExpired = params.get('session')
+    
+    if (logoutMessage === 'success') {
+      setMessage("You have been successfully logged out")
+    } else if (sessionExpired === 'expired') {
+      setMessage("Your session has expired. Please log in again")
+    }
+  }, [navigate, location]);
 
   useEffect(() => {
     if (loginStatus) {
@@ -55,6 +68,7 @@ export default function LoginPage() {
   
     setIsLoading(true)
     setLoginStatus(null)
+    setMessage("")
   
     try {
       const response = await fetch("https://projecthub-38w5.onrender.com/users/login", {
@@ -103,6 +117,12 @@ export default function LoginPage() {
               Sign in to your account to continue
             </p>
           </div>
+
+          {message && (
+            <div className="bg-blue-50 text-blue-700 border border-blue-200 rounded-lg p-4 animate-slide-in-down">
+              {message}
+            </div>
+          )}
 
           {loginStatus && (
             <div className={`transform transition-all duration-500 ease-in-out
