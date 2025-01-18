@@ -6,29 +6,12 @@ import DashboardPage from "./pages/dashboard";
 import CreateProjectPage from "./pages/create-project";
 import AdminPanel from "./pages/admin-panel";
 
-function PrivateRoute({ children }) {
-  const isAuthenticated = localStorage.getItem("isLoggedIn") === "true";
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
-
-  return children;
-}
-
 function ProtectedAdminRoute({ children }) {
   const [isAdmin, setIsAdmin] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const isAuthenticated = localStorage.getItem("isLoggedIn") === "true";
 
   useEffect(() => {
     const checkAdminStatus = async () => {
-      if (!isAuthenticated) {
-        setIsAdmin(false);
-        setIsLoading(false);
-        return;
-      }
-
       try {
         const response = await fetch("https://projecthub-38w5.onrender.com/users/admin", {
           method: "POST",
@@ -54,7 +37,7 @@ function ProtectedAdminRoute({ children }) {
     };
 
     checkAdminStatus();
-  }, [isAuthenticated]);
+  }, []);
 
   if (isLoading) {
     return (
@@ -72,39 +55,13 @@ function ProtectedAdminRoute({ children }) {
 }
 
 function App() {
-  const isAuthenticated = localStorage.getItem("isLoggedIn") === "true";
-
   return (
     <Router>
       <Routes>
-        <Route
-          path="/register"
-          element={
-            isAuthenticated ? <Navigate to="/dashboard" replace /> : <RegisterPage />
-          }
-        />
-        <Route
-          path="/"
-          element={
-            isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute>
-              <DashboardPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/projects/create"
-          element={
-            <PrivateRoute>
-              <CreateProjectPage />
-            </PrivateRoute>
-          }
-        />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/projects/create" element={<CreateProjectPage />} />
         <Route
           path="/admin"
           element={
@@ -113,16 +70,7 @@ function App() {
             </ProtectedAdminRoute>
           }
         />
-        <Route
-          path="*"
-          element={
-            isAuthenticated ? (
-              <Navigate to="/dashboard" replace />
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
+        <Route path="*" element={<Navigate to="/" replace />} /> {/* Redirect all unknown routes to '/' */}
       </Routes>
     </Router>
   );
