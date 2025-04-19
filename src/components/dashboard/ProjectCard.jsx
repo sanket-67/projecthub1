@@ -68,4 +68,4 @@ const ProjectCard = ({ project, onClick, skillGradients }) => {
   );
 };
 
-export default ProjectCard; 
+export default ProjectCard;

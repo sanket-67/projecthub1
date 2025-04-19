@@ -1,6 +1,6 @@
 // src/index.js
 import React from 'react';
-import ReactDOM from 'react-dom/client'; // Note the updated import
+import ReactDOM from 'react-dom/client';
 import { Toaster } from 'react-hot-toast';
 import './index.css';
 import App from './App';

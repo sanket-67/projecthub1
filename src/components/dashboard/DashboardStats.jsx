@@ -53,4 +53,4 @@ const DashboardStats = ({ totalProjects, activeUsers, avgDuration }) => {
   );
 };
 
-export default DashboardStats; 
+export default DashboardStats;
