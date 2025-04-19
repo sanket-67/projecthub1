@@ -15,18 +15,32 @@ export async function apiRequest(endpoint, options = {}) {
     },
   };
 
-  const response = await fetch(`${BASE_URL}${endpoint}`, {
-    ...defaultOptions,
-    ...options,
-  });
+  try {
+    const response = await fetch(`${BASE_URL}${endpoint}`, {
+      ...defaultOptions,
+      ...options,
+    });
 
-  const data = await response.json();
+    // Handle 404 errors specifically
+    if (response.status === 404) {
+      throw new ApiError(404, "Resource not found");
+    }
 
-  if (!response.ok) {
-    throw new ApiError(response.status, data.message || "Something went wrong");
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new ApiError(response.status, data.message || "Something went wrong");
+    }
+
+    return data;
+  } catch (error) {
+    // Handle network errors or JSON parsing errors
+    if (!(error instanceof ApiError)) {
+      console.error("API Request Error:", error);
+      throw new ApiError(500, "Network error or server unavailable");
+    }
+    throw error;
   }
-
-  return data;
 }
 
 export const api = {
@@ -49,10 +63,17 @@ export const api = {
       method: "POST",
     }),
 
-  getCurrentUser: () =>
-    apiRequest("/users/gettoken", {
-      method: "GET",
-    }),
+  getCurrentUser: async () => {
+    try {
+      return await apiRequest("/users/gettoken", {
+        method: "GET",
+      });
+    } catch (error) {
+      console.error("Error getting current user:", error);
+      // If we get 401 or 404, just throw to trigger redirect to login
+      throw error;
+    }
+  },
 
   // Admin endpoints
   verifyAdmin: () =>
