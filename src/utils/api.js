@@ -49,6 +49,11 @@ export const api = {
       method: "POST",
     }),
 
+  getCurrentUser: () =>
+    apiRequest("/users/gettoken", {
+      method: "GET",
+    }),
+
   // Admin endpoints
   verifyAdmin: () =>
     apiRequest("/users/admin", {

@@ -5,6 +5,7 @@ import LoginPage from "./pages/login";
 import DashboardPage from "./pages/dashboard";
 import CreateProjectPage from "./pages/create-project";
 import AdminPanel from "./pages/admin-panel";
+import { api } from "./utils/api";
 
 function ProtectedAdminRoute({ children }) {
   const [isAdmin, setIsAdmin] = useState(null);
@@ -54,14 +55,57 @@ function ProtectedAdminRoute({ children }) {
   return children;
 }
 
+function ProtectedRoute({ children }) {
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        await api.getCurrentUser();
+        setIsAuthenticated(true);
+      } catch (err) {
+        console.error("Auth check error:", err);
+        setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+}
+
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/" element={<LoginPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/projects/create" element={<CreateProjectPage />} />
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/projects/create" element={
+          <ProtectedRoute>
+            <CreateProjectPage />
+          </ProtectedRoute>
+        } />
         <Route
           path="/admin"
           element={
@@ -70,7 +114,7 @@ function App() {
             </ProtectedAdminRoute>
           }
         />
-        <Route path="*" element={<Navigate to="/" replace />} /> {/* Redirect all unknown routes to '/' */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
