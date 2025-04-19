@@ -1,18 +1,24 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import React from "react";
-import RegisterPage from "./pages/register";
-import LoginPage from "./pages/login";
-import DashboardPage from "./pages/dashboard";
-import CreateProjectPage from "./pages/create-project";
-import AdminPanel from "./pages/admin-panel";
-import NotFoundPage from "./pages/NotFound";
+import { Loader2 } from "lucide-react";
 import { api } from "./utils/api";
+
+// Lazy loading pages
+const RegisterPage = lazy(() => import("./pages/register"));
+const LoginPage = lazy(() => import("./pages/login"));
+const DashboardPage = lazy(() => import("./pages/dashboard"));
+const CreateProjectPage = lazy(() => import("./pages/create-project"));
+const AdminPanel = lazy(() => import("./pages/admin-panel"));
+const NotFoundPage = lazy(() => import("./pages/NotFound"));
 
 // Loading spinner component
 const LoadingSpinner = () => (
   <div className="min-h-screen flex items-center justify-center">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+    <div className="flex flex-col items-center">
+      <Loader2 className="h-10 w-10 animate-spin text-blue-600 mb-4" />
+      <p className="text-gray-600">Loading...</p>
+    </div>
   </div>
 );
 
@@ -133,31 +139,33 @@ function App() {
   return (
     <Router>
       <ErrorBoundary>
-        <Routes>
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/dashboard" element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/projects/create" element={
-            <ProtectedRoute>
-              <CreateProjectPage />
-            </ProtectedRoute>
-          } />
-          <Route
-            path="/admin"
-            element={
-              <ProtectedAdminRoute>
-                <AdminPanel />
-              </ProtectedAdminRoute>
-            }
-          />
-          <Route path="/404" element={<NotFoundPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+        <Suspense fallback={<LoadingSpinner />}>
+          <Routes>
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/projects/create" element={
+              <ProtectedRoute>
+                <CreateProjectPage />
+              </ProtectedRoute>
+            } />
+            <Route
+              path="/admin"
+              element={
+                <ProtectedAdminRoute>
+                  <AdminPanel />
+                </ProtectedAdminRoute>
+              }
+            />
+            <Route path="/404" element={<NotFoundPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Suspense>
       </ErrorBoundary>
     </Router>
   );
